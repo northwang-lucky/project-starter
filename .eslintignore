@@ -1,3 +1,4 @@
 bin
 lib
 dist
+src/commands/starter/create/tpl/action-scripts
