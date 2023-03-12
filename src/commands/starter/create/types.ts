@@ -1,21 +1,30 @@
-import { Namespace, TemplateName } from '../../../octokit/types';
-
 export namespace Create {
-  export type RepoMapValue = {
-    templateName: TemplateName;
-    fullName: string;
-  };
+  export type Namespace = 'front-end' | 'sever-side';
+
+  export namespace Template {
+    export type FrontEnd = 'node' | 'node-menorepo' | 'github-action' | 'nextjs';
+    export type ServerSide = 'kotlin-maven' | 'kotlin-maven-multipart';
+  }
+
   export type Answers = {
     namespace: Namespace;
-    templateIndex: number;
-    description: string;
+    template: Template.FrontEnd | Template.ServerSide;
+    description?: string;
+    author: string;
+    license: string;
+    useWorkflow: boolean;
     useGit: boolean;
-    remoteUrl: string;
+    gitIgnoreLang?: string;
+    remoteUrl?: string;
   };
 
-  export type PkgInfo = {
+  export type ProjectOptions = {
     name: string;
     description?: string;
+    author: string;
+    license: string;
+    useWorkflow: boolean;
+    gitIgnoreLang?: string;
     gitUrl?: string;
   };
 }

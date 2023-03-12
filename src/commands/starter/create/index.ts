@@ -1,9 +1,8 @@
 import * as sh from 'shelljs';
-import { getConfig } from '../../../config';
-import { downloadRepo, getTemplates } from '../../../octokit';
 import { SubCommand } from '../../../types';
-import { loading, printErr } from '../../../utils';
-import { ask, createRepoMap, processFeTemplate } from './fn';
+import { printErr } from '../../../utils';
+import { ask, createFrondEndProject } from './fn';
+import { Create } from './types';
 
 const $create: SubCommand = {
   install: program => {
@@ -17,48 +16,65 @@ const $create: SubCommand = {
           return;
         }
 
-        const { org } = getConfig();
-        loading.start(`Fetching templates from ${org}...`);
-        const [fetchErr, repos] = await getTemplates();
-        loading.stop();
-        if (fetchErr) {
-          printErr(fetchErr);
+        const { namespace, template, description, author, license, useWorkflow, useGit, gitIgnoreLang, remoteUrl } =
+          await ask();
+
+        let outputPath: string;
+        if (namespace === 'front-end') {
+          const [err, projectPath] = await createFrondEndProject(template as Create.Template.FrontEnd, {
+            name: projectName,
+            description,
+            author,
+            license,
+            useWorkflow,
+            gitIgnoreLang,
+            gitUrl: remoteUrl,
+          });
+          if (err) {
+            printErr(err);
+            return;
+          }
+          outputPath = projectPath;
+        } else {
+          printErr(`Invalid namespace "${namespace}"`);
           return;
-        }
-
-        const repoMap = createRepoMap(repos);
-        const { namespace, templateIndex, description, useGit, remoteUrl } = await ask(repoMap);
-
-        const target = repoMap.get(namespace)?.[templateIndex];
-        if (!target) {
-          printErr(`Cannnot find the target template! namespace: ${namespace}, index: ${templateIndex}`);
-          return;
-        }
-
-        loading.start(`Downloading template from ${target.fullName}...`);
-        const [downloadErr, outputPath] = await downloadRepo(target.fullName, projectName);
-        loading.stop();
-        if (downloadErr) {
-          printErr(downloadErr);
-          return;
-        }
-
-        switch (namespace) {
-          case 'fe':
-            processFeTemplate(outputPath, { name: projectName, description, gitUrl: remoteUrl });
-            break;
-          default:
         }
 
         if (useGit) {
-          const rst = sh.exec(`cd ${outputPath} && git init ---initial-branch main`);
+          let rst = sh.exec(`cd ${outputPath} && git init`, { silent: true });
+          if (rst.code !== 0) {
+            printErr(rst.stderr);
+            return;
+          }
+
+          rst = sh.exec(`cd ${outputPath} && git branch --show-current`, { silent: true });
+          if (rst.code !== 0) {
+            printErr(rst.stderr);
+            return;
+          }
+
+          // Use a speical way to modify the default branch from master to main
+          const current = rst.stdout;
+          if (current !== 'main') {
+            rst = sh.exec(`cd ${outputPath} && git add . && git checkout -b main && git rm -r --cached .`, {
+              silent: true,
+            });
+            if (rst.code !== 0) {
+              printErr(rst.stderr);
+              return;
+            }
+          }
+        }
+
+        if (remoteUrl) {
+          const rst = sh.exec(`cd ${outputPath} && git remote add origin ${remoteUrl}`);
           if (rst.code !== 0) {
             printErr(rst.stderr);
             return;
           }
         }
 
-        console.log(`\nSucceed! Run \`cd ${projectName}\` and do anything you want to do!`);
+        console.log(`\nSucceed!\nRun \`cd ${projectName}\` and do anything you want to do!`);
       });
   },
 };

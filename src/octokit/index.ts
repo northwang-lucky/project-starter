@@ -1,66 +1,29 @@
-import AdmZip from 'adm-zip';
-import * as fs from 'fs-extra';
 import { Octokit } from 'octokit';
-import * as path from 'path';
-import { parseConfig } from '../config';
-import { error, printErr } from '../utils';
-import { GetTemplatesRsp, Repo } from './types';
+import { error } from '../utils';
 
-const [parseErr, { githubToken, org }] = parseConfig();
-if (parseErr) {
-  printErr(parseErr);
-  process.exit();
-}
+const octokit = new Octokit();
 
-const octokit = new Octokit({
-  auth: githubToken,
-});
-
-export async function getTemplates(): Promise<GetTemplatesRsp> {
+export async function getGitIgnoreLangs(): Promise<[Error | null, string[]]> {
   try {
-    const res = await octokit.rest.repos.listForOrg({ org });
+    const res = await octokit.rest.gitignore.getAllTemplates();
     if (res.status !== 200) {
-      const err = error(`Orgnaization information request failed! status: ${res.status}`);
-      return [err, []];
+      const err = error(`Fetch all .gitignore templates failed! status: ${res.status}`);
+      return [error(err), []];
     }
-
-    const repos = res.data
-      .filter(r => r.name !== 'project-starter')
-      .map<Repo>(repo => {
-        const { name, full_name: fullName } = repo;
-        const [namespace, templateName] = name.split('-');
-        return { name, fullName, tags: [namespace, templateName] };
-      });
-
-    return [null, repos];
+    return [null, res.data];
   } catch (err) {
     return [error(err), []];
   }
 }
 
-export async function downloadRepo(fullName: string, projectName: string): Promise<[Error | null, string]> {
+export async function getGitIgnore(lang: string): Promise<[Error | null, string]> {
   try {
-    const [owner, repo] = fullName.split('/');
-    const res = await octokit.rest.repos.downloadZipballArchive({ owner, repo, ref: 'main' });
-    if (![200, 302].includes(res.status)) {
-      const err = error(`Download zip format archive failed!`);
+    const res = await octokit.rest.gitignore.getTemplate({ name: lang });
+    if (res.status !== 200) {
+      const err = error(`Fetch ${lang} .gitignore template failed!`);
       return [err, ''];
     }
-
-    const workPath = process.cwd();
-    const zipPath = path.resolve(workPath, `${projectName}.zip`);
-    fs.createFileSync(zipPath);
-    fs.writeFileSync(zipPath, new Uint8Array(res.data as ArrayBuffer));
-
-    const zip = new AdmZip(zipPath);
-    const dirName = zip.getEntries()?.[0].entryName;
-
-    zip.extractAllTo(workPath);
-    fs.removeSync(zipPath);
-
-    const outputPath = path.resolve(workPath, projectName);
-    fs.renameSync(path.resolve(workPath, dirName), outputPath);
-    return [null, outputPath];
+    return [null, res.data.source];
   } catch (err) {
     return [error(err), ''];
   }
