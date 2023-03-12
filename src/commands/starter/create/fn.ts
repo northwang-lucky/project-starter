@@ -2,8 +2,7 @@ import * as fs from 'fs-extra';
 import * as inquirer from 'inquirer';
 import * as path from 'path';
 import { Namespace, Repo } from '../../../octokit/types';
-import { questionFactory } from '../../../question-factory';
-import { error } from '../../../utils';
+import { error, questionFactory } from '../../../utils';
 import { Create } from './types';
 
 export function createRepoMap(repos: Repo[]): Map<Namespace, Create.RepoMapValue[]> {

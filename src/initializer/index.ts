@@ -1,7 +1,6 @@
 import * as inquirer from 'inquirer';
 import { createConfig, hasConfig } from '../config';
-import { questionFactory } from '../question-factory';
-import { printErr } from '../utils';
+import { printErr, questionFactory } from '../utils';
 import { InitializerAnswers } from './types';
 
 export default async (): Promise<boolean> => {
