@@ -4,7 +4,7 @@ specifiers:
   '@commitlint/cli': 17.4.2
   '@commitlint/config-conventional': 17.4.2
   '@types/cli-spinner': 0.2.1
-  '@types/fs-extra': 11.0.1
+  '@types/fs-extra': 9.0.7
   '@types/inquirer': 8.2.5
   '@types/node': 14.14.31
   '@types/shelljs': 0.8.11
@@ -44,7 +44,7 @@ devDependencies:
   '@commitlint/cli': 17.4.2
   '@commitlint/config-conventional': 17.4.2
   '@types/cli-spinner': 0.2.1
-  '@types/fs-extra': 11.0.1
+  '@types/fs-extra': 9.0.7
   '@types/inquirer': 8.2.5
   '@types/node': 14.14.31
   '@types/shelljs': 0.8.11
@@ -851,10 +851,9 @@ packages:
       '@types/node': 14.14.31
     dev: true
 
-  /@types/fs-extra/11.0.1:
-    resolution: {integrity: sha512-MxObHvNl4A69ofaTRU8DFqvgzzv8s9yRtaPPm5gud9HDNvpB3GPQFvNuTWAI59B9huVGV5jXYJwbCsmBsOGYWA==}
+  /@types/fs-extra/9.0.7:
+    resolution: {integrity: sha512-YGq2A6Yc3bldrLUlm17VNWOnUbnEzJ9CMgOeLFtQF3HOCN5lQBO8VyjG00a5acA5NNSM30kHVGp1trZgnVgi1Q==}
     dependencies:
-      '@types/jsonfile': 6.1.1
       '@types/node': 14.14.31
     dev: true
 
@@ -877,12 +876,6 @@ packages:
 
   /@types/json5/0.0.29:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
-    dev: true
-
-  /@types/jsonfile/6.1.1:
-    resolution: {integrity: sha512-GSgiRCVeapDN+3pqA35IkQwasaCh/0YFH5dEF6S88iDvEn901DjOeH3/QPY+XYP1DFzDZPvIvfeEgk+7br5png==}
-    dependencies:
-      '@types/node': 14.14.31
     dev: true
 
   /@types/jsonwebtoken/9.0.1:
