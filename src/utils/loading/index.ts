@@ -1,16 +1,9 @@
-import { Spinner } from 'cli-spinner';
+import { dots } from 'cli-spinners';
+import ora from 'ora';
 
-const spinner = new Spinner();
-spinner.setSpinnerString(0);
+const spinner = ora({ ...dots });
 
-// TODO replase with https://github.com/sindresorhus/ora
 export const loading = {
-  start(title: string) {
-    spinner.setSpinnerTitle(title);
-    spinner.start();
-  },
-  stop() {
-    spinner.stop();
-    spinner.clearLine(spinner.stream);
-  },
+  start: (title: string) => spinner.start(title),
+  stop: () => spinner.stop(),
 };
