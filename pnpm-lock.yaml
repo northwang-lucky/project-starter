@@ -3,7 +3,6 @@ lockfileVersion: 5.4
 specifiers:
   '@commitlint/cli': 17.4.2
   '@commitlint/config-conventional': 17.4.2
-  '@types/cli-spinner': 0.2.1
   '@types/fs-extra': 9.0.7
   '@types/inquirer': 8.2.5
   '@types/node': 14.14.31
@@ -45,7 +44,6 @@ dependencies:
 devDependencies:
   '@commitlint/cli': 17.4.2
   '@commitlint/config-conventional': 17.4.2
-  '@types/cli-spinner': 0.2.1
   '@types/fs-extra': 9.0.7
   '@types/inquirer': 8.2.5
   '@types/node': 14.14.31
@@ -846,12 +844,6 @@ packages:
   /@types/btoa-lite/1.0.0:
     resolution: {integrity: sha512-wJsiX1tosQ+J5+bY5LrSahHxr2wT+uME5UDwdN1kg4frt40euqA+wzECkmq4t5QbveHiJepfdThgQrPw6KiSlg==}
     dev: false
-
-  /@types/cli-spinner/0.2.1:
-    resolution: {integrity: sha512-bsdlZy3LThi9QbsK0GXm5s/e3F6HAJi1tMsIanm9trtoStSlV3gzir9JpfOK40gERMNIVevDTpG5NzSGnYs3QA==}
-    dependencies:
-      '@types/node': 14.14.31
-    dev: true
 
   /@types/fs-extra/9.0.7:
     resolution: {integrity: sha512-YGq2A6Yc3bldrLUlm17VNWOnUbnEzJ9CMgOeLFtQF3HOCN5lQBO8VyjG00a5acA5NNSM30kHVGp1trZgnVgi1Q==}
