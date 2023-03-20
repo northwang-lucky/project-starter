@@ -8,7 +8,7 @@ export namespace Create {
 
   export type Answers = {
     namespace: Namespace;
-    template: Template.FrontEnd | Template.ServerSide;
+    template: string;
     description?: string;
     author: string;
     license: string;

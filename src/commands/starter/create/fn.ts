@@ -3,29 +3,24 @@ import inquirer from 'inquirer';
 import { findLicense, getLicense } from 'license';
 import path from 'path';
 import yaml from 'yaml';
+import { fetchNamespaceList, fetchTemplateList } from '../../../api';
+import { getGitIgnore, getGitIgnoreLangs } from '../../../octokit';
 import { error, printErr, questionFactory } from '../../../utils';
 import * as tpl from './tpl';
 import { Create } from './types';
-import { getGitIgnore, getGitIgnoreLangs } from '../../../octokit';
 
 export async function ask(): Promise<Create.Answers> {
   const questions = questionFactory<Create.Answers>(question => [
     question.list('namespace', {
       message: 'Please select a namespace:',
-      choices: ['front-end', 'server-side'],
+      choices: () => fetchNamespaceList(),
       default: 'front-end',
     }),
     question.list('template', {
       message: 'Please select a template:',
-      choices: ({ namespace }) => {
-        switch (namespace) {
-          case 'front-end':
-            return ['node', 'node-menorepo', 'github-action', 'nextjs'] as Create.Template.FrontEnd[];
-          case 'sever-side':
-            return ['kotlin-maven', 'kotlin-maven-multipart'] as Create.Template.ServerSide[];
-          default:
-            return [];
-        }
+      choices: async ({ namespace }) => {
+        const templates = await fetchTemplateList(namespace);
+        return templates;
       },
       default: 'node',
     }),
