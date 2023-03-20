@@ -77,7 +77,10 @@ const $create: SubCommand = {
         }
 
         if (remoteUrl) {
-          const rst = sh.exec(`cd ${outputPath} && git remote add origin ${remoteUrl}`);
+          // https://github.com/username/repo.git
+          // git@github.com:username/repo.git
+          const sshRemoteUrl = remoteUrl.replace(/https?:\/\/(.*?)\//, 'git@$1:');
+          const rst = sh.exec(`cd ${outputPath} && git remote add origin ${sshRemoteUrl}`);
           if (rst.code !== 0) {
             printErr(rst.stderr);
             return;
